@@ -41,16 +41,16 @@ function addChoice() {
                 case "Add Employee":
                     addEmployee();
                     break;
-                    case "View Department":
+                case "View Department":
                     viewDepertment();
                     break;
-                    case "View Role":
+                case "View Role":
                     viewRole();
                     break;
-                    case "View Employees":
+                case "View Employees":
                     viewEmployee();
                     break;
-                    case "Update Employee Role":
+                case "Update Employee Role":
                     updateRole();
                     break;
                 case "Cancel":
@@ -106,12 +106,12 @@ function addEmployee() {
         .prompt([{
             name: "empFirst",
             type: "input",
-            message: "What is the role title?"
+            message: "What is the employee first name?"
         },
         {
             name: "empLast",
             type: "input",
-            message: "What is the role salary?"
+            message: "What is the employee last name?"
         }, {
             name: "roleid",
             type: "input",
@@ -119,36 +119,65 @@ function addEmployee() {
         }, {
             name: "manid",
             type: "input",
-            message: "What is the ID for the management rdole?"
+            message: "What is the ID for the management role?"
         }
-    ]).then(function (answer) {
-        var query = "INSERT INTO employee SET ?";
-        connection.query(query, { first_name: answer.empFirst, last_name: answer.empLast, role_id: answer.roleid, manager_id: manid }, function (err) {
-            if (err) throw err;
-            addChoice();
+        ]).then(function (answer) {
+            var query = "INSERT INTO employee SET ?";
+            connection.query(query, { first_name: answer.empFirst, last_name: answer.empLast, role_id: answer.roleid, manager_id: manid }, function (err) {
+                if (err) throw err;
+                addChoice();
+            })
         })
-    })
 };
 
 function viewDepertment() {
-    connection.query("SELECT name_dep FROM department", function(err, res){
+    // connection.query("SELECT name_dep FROM department", function (err, res) {
+    //     if (err) throw err;
+    //     console.log(res);
+    //     addChoice();
+    // });
+    
+};
+
+function viewRole() {
+    var query = "SELECT title, salary, department_id FROM role";
+    connection.query(query, function (err, res) {
         if (err) throw err;
         console.log(res);
+        addChoice();
     });
 };
 
-function viewRole(){
-    connection.query("SELECT department_name FROM department", function(err, res){
+function viewEmployee() {
+    connection.query("SELECT first_name, last_name, role_id, manager_id FROM employee", function (err, res) {
         if (err) throw err;
         console.log(res);
+        addChoice();
     });
 };
 
-function viewEmployee(){
-    connection.query("SELECT department_name FROM department", function(err, res){
-        if (err) throw err;
-        console.log(res);
-    });
-};
+function updateRole() {
 
-// function updateRole();
+    var query = "SELECT title, salary, department_id FROM role";
+    connection.query(query, function (err, res) {
+        inquirer.prompt(
+            [
+                {
+                    name: "oldRole",
+                    type: "list",
+                    message: "Choose a role to update",
+                    choices: ["res"]
+                },
+                {
+                    name: "roleid",
+                    type: "input",
+                    message: "What is the employee's new role?"
+                }
+            ]).then(function (answer) {
+                connection.query("UPDATE role SET ? WHERE ?", [{ title: answer.roleid }, { title: answer.oldRole }], function (err, res) {
+
+                })
+            })
+    });
+
+} 
