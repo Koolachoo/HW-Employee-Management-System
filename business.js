@@ -131,12 +131,12 @@ function addEmployee() {
 };
 
 function viewDepertment() {
-    // connection.query("SELECT name_dep FROM department", function (err, res) {
-    //     if (err) throw err;
-    //     console.log(res);
-    //     addChoice();
-    // });
-    
+    connection.query("SELECT name_dep FROM department", function (err, res) {
+        if (err) throw err;
+        console.log(res);
+        addChoice();
+    });
+
 };
 
 function viewRole() {
@@ -157,16 +157,12 @@ function viewEmployee() {
 };
 
 function updateRole() {
-
-    var query = "SELECT title, salary, department_id FROM role";
-    connection.query(query, function (err, res) {
         inquirer.prompt(
             [
                 {
                     name: "oldRole",
-                    type: "list",
-                    message: "Choose a role to update",
-                    choices: ["res"]
+                    type: "input",
+                    message: "What role would you like to update"
                 },
                 {
                     name: "roleid",
@@ -174,10 +170,9 @@ function updateRole() {
                     message: "What is the employee's new role?"
                 }
             ]).then(function (answer) {
-                connection.query("UPDATE role SET ? WHERE ?", [{ title: answer.roleid }, { title: answer.oldRole }], function (err, res) {
+                connection.query("UPDATE role SET ? WHERE title = ?", [{ title: answer.roleid }, { title: answer.oldRole }], function (err, res) {
 
                 })
             })
-    });
+    };
 
-} 
