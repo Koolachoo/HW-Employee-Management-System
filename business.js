@@ -28,6 +28,7 @@ function addChoice() {
                 "View Role",
                 "View Employees",
                 "Update Employee Role",
+                "Update Employee Manager",
                 "cancel"
             ]
         }).then(function (answer) {
@@ -42,7 +43,7 @@ function addChoice() {
                     addEmployee();
                     break;
                 case "View Department":
-                    viewDepertment();
+                    viewDepartment();
                     break;
                 case "View Role":
                     viewRole();
@@ -52,6 +53,9 @@ function addChoice() {
                     break;
                 case "Update Employee Role":
                     updateRole();
+                    break;
+                case "Update Employee Manager":
+                    updateManager();
                     break;
                 case "Cancel":
                     connection.end();
@@ -130,10 +134,10 @@ function addEmployee() {
         })
 };
 
-function viewDepertment() {
+function viewDepartment() {
     connection.query("SELECT name_dep FROM department", function (err, res) {
         if (err) throw err;
-        console.log(res);
+        console.table(res);
         addChoice();
     });
 
@@ -143,7 +147,7 @@ function viewRole() {
     var query = "SELECT title, salary, department_id FROM role";
     connection.query(query, function (err, res) {
         if (err) throw err;
-        console.log(res);
+        console.table(res);
         addChoice();
     });
 };
@@ -151,28 +155,50 @@ function viewRole() {
 function viewEmployee() {
     connection.query("SELECT first_name, last_name, role_id, manager_id FROM employee", function (err, res) {
         if (err) throw err;
-        console.log(res);
+        console.table(res);
         addChoice();
     });
 };
 
 function updateRole() {
+    
         inquirer.prompt(
             [
                 {
                     name: "oldRole",
                     type: "input",
-                    message: "What role would you like to update"
+                    message: "What role id would you like to update?"
                 },
                 {
                     name: "roleid",
                     type: "input",
-                    message: "What is the employee's new role?"
+                    message: "What is the employee's new role id?"
                 }
             ]).then(function (answer) {
-                connection.query("UPDATE role SET ? WHERE title = ?", [{ title: answer.roleid }, { title: answer.oldRole }], function (err, res) {
-
+                connection.query("UPDATE employee SET role_id = ? WHERE id = ?", [ answer.roleid , answer.oldRole ], function (err) {
+                    if (err) throw err;
+                    addChoice();
                 })
             })
     };
 
+    function updateManager() {
+        inquirer.prompt(
+            [
+                {
+                    name: "oldManager",
+                    type: "input",
+                    message: "Enter the employee ID of whom you would wish to update their manager"
+                },
+                {
+                    name: "manageid",
+                    type: "input",
+                    message: "What is the employee's new manager id?"
+                }
+            ]).then(function (answer) {
+                connection.query("UPDATE employee SET manager_id = ? WHERE id = ?", [ answer.manageid , answer.oldManager ], function (err) {
+                    if (err) throw err;
+                    addChoice();
+                })
+            })
+    };
