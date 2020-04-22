@@ -127,7 +127,7 @@ function addEmployee() {
         }
         ]).then(function (answer) {
             var query = "INSERT INTO employee SET ?";
-            connection.query(query, { first_name: answer.empFirst, last_name: answer.empLast, role_id: answer.roleid, manager_id: manid }, function (err) {
+            connection.query(query, { first_name: answer.empFirst, last_name: answer.empLast, role_id: answer.roleid, manager_id: answer.manid }, function (err) {
                 if (err) throw err;
                 addChoice();
             })
